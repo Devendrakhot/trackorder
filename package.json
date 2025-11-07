@@ -1,0 +1,13 @@
+{
+  "name": "shiprocket-tracker",
+  "version": "1.0.0",
+  "description": "Serverless Shiprocket tracking setup (local + CDN frontend)",
+  "main": "api/track.js",
+  "scripts": {
+    "start": "node api/track.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "node-fetch": "^2.6.11"
+  }
+}
