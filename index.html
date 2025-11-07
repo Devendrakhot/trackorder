@@ -125,13 +125,18 @@
   </main>
 
   <script>
-    const API_BASE = "http://localhost:3000/api";
+    // ✅ Smart API base for local + production
+    const API_BASE = window.location.hostname.includes("localhost")
+      ? "http://localhost:3000/api"
+      : "/api";
+    console.log("🚀 Using API Base:", API_BASE);
+  
     const trackButton = document.getElementById('trackButton');
     const orderInput = document.getElementById('orderInput');
     const statusMsg = document.getElementById('statusMsg');
     const trackingContainer = document.getElementById('trackingContainer');
-
-    // 🔹 Enable/disable button based on input
+  
+    // Enable/disable button dynamically
     orderInput.addEventListener('input', function() {
       const value = orderInput.value.trim();
       if (value !== "") {
@@ -144,31 +149,34 @@
         trackButton.classList.add("bg-gray-300", "cursor-not-allowed");
       }
     });
-
-    // 🔹 Handle API tracking request
+  
+    // Handle tracking API call
     trackButton.addEventListener('click', async function() {
       const awb = orderInput.value.trim();
       if (!awb) return;
-
+  
       statusMsg.textContent = "🔍 Fetching tracking info...";
       trackButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Tracking...';
       trackButton.disabled = true;
-
+  
       try {
         const res = await axios.get(`${API_BASE}/track?awb=${awb}`);
         const td = res.data.tracking_data;
         const track = td.shipment_track?.[0] || {};
         const activities = td.shipment_track_activities || [];
-
+  
         if (!track.current_status) {
           trackingContainer.classList.add("hidden");
-          statusMsg.innerHTML = `<p class='text-red-600'>No tracking info found for <b>${awb}</b>.</p>`;
+          statusMsg.innerHTML = `<p class='text-red-600'>⚠️ No tracking info found for <b>${awb}</b>.</p>`;
           return;
         }
-
+  
         trackingContainer.classList.remove("hidden");
-        statusMsg.innerHTML = `<p class='text-green-600 font-medium'>✅ Tracking info for <b>${awb}</b></p>`;
-
+        statusMsg.innerHTML = `<p class='text-green-600 font-medium'>
+          ✅ Tracking info for <b>${awb}</b>
+          ${awb === "1234" ? "<br/><span class='text-gray-500 text-sm'>(Demo data loaded)</span>" : ""}
+        </p>`;
+  
         trackingContainer.innerHTML = `
           <div class="bg-gradient-to-br from-[#fffaf7] to-[#f5f0ec] shadow-xl rounded-2xl p-6 mb-10">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-gray-200 pb-4">
@@ -183,7 +191,7 @@
                 ${track.current_status || "In Transit"}
               </div>
             </div>
-
+  
             <div class="grid md:grid-cols-2 gap-3 text-gray-700 text-sm mb-6">
               <p><b>Origin:</b> ${track.origin || "—"}</p>
               <p><b>Destination:</b> ${track.destination || "—"}</p>
@@ -192,7 +200,7 @@
               <p><b>Weight:</b> ${track.weight || "—"}</p>
               <p><b>Delivered To:</b> ${track.delivered_to || "—"}</p>
             </div>
-
+  
             <h3 class="text-lg font-semibold text-[#2A0001] mb-4">Tracking Timeline</h3>
             <div class="relative border-l-2 border-gray-300 ml-3 pl-6 mt-4">
               ${activities.map((step, i) => `
@@ -214,12 +222,13 @@
         `;
       } catch (err) {
         console.error(err);
-        statusMsg.innerHTML = "<p class='text-red-600'>❌ Error fetching tracking info. Try again later.</p>";
+        statusMsg.innerHTML = "<p class='text-red-600'>⚠️ No tracking info found. Please check and try again.</p>";
       } finally {
         trackButton.disabled = false;
         trackButton.innerHTML = '<i class="fas fa-search mr-2"></i> Track Your Order';
       }
     });
   </script>
+  
 </body>
 </html>
