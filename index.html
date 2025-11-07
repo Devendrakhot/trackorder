@@ -8,59 +8,95 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
-    .gradient-bg { background: linear-gradient(to bottom, #2A0001 30%, #ffffff); }
-    .fade-in { animation: fadeIn 0.8s ease-in; }
+    :root {
+      --primary: #2A0001;
+      --secondary: #DAA864;
+    }
+
+    body {
+      font-family: 'Lexend', sans-serif;
+      background-color: #f9fafb;
+      color: var(--primary);
+    }
+
+    h1, h2, h3, h4, h5, h6, .font-primary {
+      font-family: 'Philosopher', sans-serif;
+      color: var(--primary);
+    }
+
+    .gradient-bg {
+      background: linear-gradient(to bottom, var(--primary) 30%, #ffffff);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .timeline-dot { transition: all 0.3s ease; }
-    .timeline-dot:hover { transform: scale(1.1); }
-    #trackButton {
-      transition: background-color 0.3s ease-in-out, cursor 0.2s;
+
+    .timeline-dot {
+      transition: all 0.3s ease;
     }
+
+    .timeline-dot:hover {
+      transform: scale(1.1);
+    }
+
+    #trackButton {
+      transition: background-color 0.3s ease-in-out, cursor 0.2s, box-shadow 0.3s;
+    }
+
     #trackButton:disabled {
       cursor: not-allowed;
-      background-color: #d1d5db; /* Tailwind gray-300 */
+      background-color: #d1d5db;
+    }
+
+    #trackButton:not(:disabled):hover {
+      box-shadow: 0 0 12px rgba(218, 168, 100, 0.6);
     }
   </style>
 </head>
 
 <body class="min-h-screen flex flex-col">
   <main class="flex-grow">
-    <section class="gradient-bg rounded-b-3xl px-4 py-10 md:py-10">
+    <section class="gradient-bg rounded-b-3xl px-4 py-12 md:py-16">
       <div class="max-w-6xl mx-auto">
         <div class="flex flex-col md:flex-row items-center gap-10">
           
           <!-- Left Content -->
           <div class="md:w-1/2 text-center md:text-left fade-in">
-            <h1 class="text-4xl md:text-5xl font-bold text-[#B2A8A0] mb-4">
-              Track your <span class="text-[#890B0f]">orders easily</span>
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--secondary)] mb-4 font-primary">
+              Track your <span class="text-white">orders easily</span>
             </h1>
-            <p class="text-lg text-white mb-8">
+            <p class="text-lg text-gray-200 mb-8 font-[Lexend]">
               Stay updated with your order’s journey and delivery status.
             </p>
           </div>
 
           <!-- Right Form -->
-          <div class="md:w-1/2 w-full bg-white rounded-xl shadow-lg p-6 md:p-8 fade-in" style="animation-delay: 0.2s;">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center md:text-left">Track Your Order</h2>
+          <div class="md:w-1/2 w-full bg-white rounded-xl shadow-xl p-6 md:p-8 fade-in" style="animation-delay: 0.2s;">
+            <h2 class="text-2xl font-semibold mb-6 text-center md:text-left font-primary text-[var(--primary)]">
+              Track Your Order
+            </h2>
 
-            <!-- Instruction Line -->
-            <p class="text-gray-700 mb-3 text-center md:text-left">
-              Enter your <span class="font-semibold text-[#2A0001]">Tracking Number (AWB)</span> below to check your order status.
+            <p class="text-gray-700 mb-3 text-center md:text-left font-[Lexend]">
+              Enter your <span class="font-semibold text-[var(--primary)]">Tracking Number (AWB)</span> below to check your order status.
             </p>
 
             <div class="mb-6">
               <input id="orderInput" type="text" placeholder="Enter Your Tracking ID (AWB)"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-[#2A0001] focus:border-[#2A0001] outline-none">
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-[var(--secondary)] focus:border-[var(--secondary)] outline-none">
             </div>
 
             <button id="trackButton" disabled
-              class="w-full bg-gray-300 text-white font-semibold py-3 rounded-lg cursor-not-allowed">
+              class="w-full bg-gray-300 text-white font-semibold py-3 rounded-lg cursor-not-allowed font-[Lexend]">
               <i class="fas fa-search mr-2"></i> Track Your Order
             </button>
 
@@ -73,7 +109,6 @@
 
       <!-- Tracking Result Container -->
       <div id="trackingContainer" class="max-w-4xl mx-auto mt-12 hidden fade-in"></div>
-
     </section>
   </main>
 
@@ -84,16 +119,16 @@
     const statusMsg = document.getElementById('statusMsg');
     const trackingContainer = document.getElementById('trackingContainer');
 
-    // 🔹 Enable/disable button based on input
+    // 🔹 Enable/disable button dynamically
     orderInput.addEventListener('input', function() {
       const value = orderInput.value.trim();
       if (value !== "") {
         trackButton.disabled = false;
         trackButton.classList.remove("bg-gray-300", "cursor-not-allowed");
-        trackButton.classList.add("bg-[#2A0001]", "cursor-pointer");
+        trackButton.classList.add("bg-[var(--primary)]", "cursor-pointer", "hover:bg-[var(--secondary)]");
       } else {
         trackButton.disabled = true;
-        trackButton.classList.remove("bg-[#2A0001]", "cursor-pointer");
+        trackButton.classList.remove("bg-[var(--primary)]", "cursor-pointer");
         trackButton.classList.add("bg-gray-300", "cursor-not-allowed");
       }
     });
@@ -115,29 +150,31 @@
 
         if (!track.current_status) {
           trackingContainer.classList.add("hidden");
-          statusMsg.innerHTML = `<p class='text-red-600'>No tracking info found for <b>${awb}</b>.</p>`;
+          statusMsg.innerHTML = `<p class='text-red-600 font-[Lexend]'>⚠️ No tracking info found for <b>${awb}</b>.</p>`;
           return;
         }
 
         trackingContainer.classList.remove("hidden");
-        statusMsg.innerHTML = `<p class='text-green-600 font-medium'>✅ Tracking info for <b>${awb}</b></p>`;
+        statusMsg.innerHTML = `<p class='text-[var(--secondary)] font-medium font-[Lexend]'>
+          ✅ Tracking info for <b>${awb}</b>
+        </p>`;
 
         trackingContainer.innerHTML = `
           <div class="bg-gradient-to-br from-[#fffaf7] to-[#f5f0ec] shadow-xl rounded-2xl p-6 mb-10">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-gray-200 pb-4">
               <div class="flex items-center space-x-3">
-                <i class="fas fa-truck text-[#2A0001] text-2xl"></i>
+                <i class="fas fa-truck text-[var(--primary)] text-2xl"></i>
                 <div>
-                  <p class="text-lg font-semibold text-[#2A0001]">${track.courier_name || "Courier"}</p>
-                  <p class="text-sm text-gray-600">AWB: ${track.awb_code || awb}</p>
+                  <p class="text-lg font-semibold text-[var(--primary)] font-primary">${track.courier_name || "Courier"}</p>
+                  <p class="text-sm text-gray-600 font-[Lexend]">AWB: ${track.awb_code || awb}</p>
                 </div>
               </div>
-              <div class="bg-[#2A0001] text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md">
+              <div class="bg-[var(--primary)] text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md font-[Lexend]">
                 ${track.current_status || "In Transit"}
               </div>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-3 text-gray-700 text-sm mb-6">
+            <div class="grid md:grid-cols-2 gap-3 text-gray-700 text-sm mb-6 font-[Lexend]">
               <p><b>Origin:</b> ${track.origin || "—"}</p>
               <p><b>Destination:</b> ${track.destination || "—"}</p>
               <p><b>Pickup Date:</b> ${track.pickup_date || "—"}</p>
@@ -146,28 +183,26 @@
               <p><b>Delivered To:</b> ${track.delivered_to || "—"}</p>
             </div>
 
-            <h3 class="text-lg font-semibold text-[#2A0001] mb-4">Tracking Timeline</h3>
-           
-              ${activities.map((step, i) => `
-                <div class="relative pb-10 flex items-start group">
-                  ${i !== activities.length - 1 ? `<span class="absolute left-[7px] top-5 w-[2px] h-full bg-gray-300"></span>` : ""}
-                  <div class="timeline-dot relative z-10 flex items-center justify-center w-4 h-4 mt-1.5 rounded-full
-                    ${i === activities.length - 1 ? 'bg-[#2A0001] shadow-[0_0_10px_rgba(42,0,1,0.5)]' : 'bg-gray-400'}">
-                    ${i === activities.length - 1 ? '<span class="absolute w-2 h-2 bg-white rounded-full"></span>' : ''}
-                  </div>
-                  <div class="ml-5">
-                    <p class="font-semibold text-gray-800 leading-tight">${step.status}</p>
-                    <p class="text-sm text-gray-600">${step.location || "—"}</p>
-                    <p class="text-xs text-gray-400">${step.date || ""}</p>
-                  </div>
+            <h3 class="text-lg font-semibold text-[var(--primary)] mb-4 font-primary">Tracking Timeline</h3>
+            ${activities.map((step, i) => `
+              <div class="relative pb-10 flex items-start group">
+                ${i !== activities.length - 1 ? `<span class="absolute left-[7px] top-5 w-[2px] h-full bg-gray-300"></span>` : ""}
+                <div class="timeline-dot relative z-10 flex items-center justify-center w-4 h-4 mt-1.5 rounded-full
+                  ${i === activities.length - 1 ? 'bg-[var(--primary)] shadow-[0_0_10px_rgba(42,0,1,0.6)]' : 'bg-[var(--secondary)]'}">
+                  ${i === activities.length - 1 ? '<span class="absolute w-2 h-2 bg-white rounded-full animate-ping"></span>' : ''}
                 </div>
-              `).join("")}
-           
+                <div class="ml-5">
+                  <p class="font-semibold text-[var(--primary)] leading-tight font-[Lexend]">${step.status}</p>
+                  <p class="text-sm text-gray-600 font-[Lexend]">${step.location || "—"}</p>
+                  <p class="text-xs text-gray-400 font-[Lexend]">${step.date || ""}</p>
+                </div>
+              </div>
+            `).join("")}
           </div>
         `;
       } catch (err) {
         console.error(err);
-        statusMsg.innerHTML = "<p class='text-red-600'>❌ No tracking Number info found.</p>";
+        statusMsg.innerHTML = "<p class='text-red-600 font-[Lexend]'>❌ No tracking number found. Please check and try again.</p>";
       } finally {
         trackButton.disabled = false;
         trackButton.innerHTML = '<i class="fas fa-search mr-2"></i> Track Your Order';
