@@ -12,16 +12,6 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
     .gradient-bg { background: linear-gradient(to bottom, #2A0001 30%, #ffffff); }
-    .ping { position: relative; }
-    .ping::before {
-      content: ''; position: absolute; top: 50%; left: 50%; width: 100%; height: 100%;
-      border-radius: 9999px; background: rgba(251,146,60,0.4);
-      transform: translate(-50%, -50%); animation: ping 2s infinite;
-    }
-    @keyframes ping {
-      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
-    }
     .fade-in { animation: fadeIn 0.8s ease-in; }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
@@ -53,15 +43,6 @@
             <p class="text-lg text-white mb-8">
               Stay updated with your order’s journey and delivery status.
             </p>
-
-            <!-- Animated Location Pin -->
-            <div class="flex justify-center md:justify-start">
-              <div class="bg-white rounded-full p-4 shadow-lg relative">
-                <div class="ping w-14 h-14 flex items-center justify-center">
-                  <i class="fas fa-location-dot text-[#2A0001] text-2xl md:text-3xl"></i>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- Right Form -->
@@ -93,50 +74,17 @@
       <!-- Tracking Result Container -->
       <div id="trackingContainer" class="max-w-4xl mx-auto mt-12 hidden fade-in"></div>
 
-      <!-- Info Section -->
-      <div class="max-w-6xl mx-auto mt-16 bg-white rounded-3xl overflow-hidden shadow-lg flex flex-col md:flex-row">
-        <div class="md:w-1/2">
-          <img 
-            src="https://www.chinmayamission.com/_next/image?url=https%3A%2F%2Fimages.chinmayamission.com%2Fuploads%2F2_1_955095570d.jpg&w=640&q=75" 
-            alt="Community Well-being" 
-            class="w-[600px] h-[300px] object-cover mix-blend-multiply opacity-90 rounded-xl shadow-lg"
-          >
-        </div>
-        <div class="md:w-1/2 p-8 flex flex-col justify-center text-center md:text-left">
-          <h2 class="text-2xl font-bold text-[#2A0001] mb-4">
-            Supporting Well-being Through Every Purchase
-          </h2>
-          <p class="text-gray-800 text-lg italic mb-3">
-            “Proceeds from Chinmaya Mission are used to bring well-being to people and communities.”
-          </p>
-          <p class="text-gray-600">
-            Each product you buy contributes to initiatives in health, education, and inner transformation.
-          </p>
-        </div>
-      </div>
-
-      <div class="max-w-6xl mx-auto mt-6 text-center md:text-left px-4">
-        <p class="text-gray-700 text-center">
-          For questions or concerns, contact us 
-          <a href="#" class="text-[#2A0001] hover:underline font-medium">here</a>.
-        </p>
-      </div>
     </section>
   </main>
 
   <script>
-    // ✅ Smart API base for local + production
-    const API_BASE = window.location.hostname.includes("localhost")
-      ? "http://localhost:3000/api"
-      : "/api";
-    console.log("🚀 Using API Base:", API_BASE);
-  
+    const API_BASE = "http://localhost:3000/api";
     const trackButton = document.getElementById('trackButton');
     const orderInput = document.getElementById('orderInput');
     const statusMsg = document.getElementById('statusMsg');
     const trackingContainer = document.getElementById('trackingContainer');
-  
-    // Enable/disable button dynamically
+
+    // 🔹 Enable/disable button based on input
     orderInput.addEventListener('input', function() {
       const value = orderInput.value.trim();
       if (value !== "") {
@@ -149,34 +97,31 @@
         trackButton.classList.add("bg-gray-300", "cursor-not-allowed");
       }
     });
-  
-    // Handle tracking API call
+
+    // 🔹 Handle API tracking request
     trackButton.addEventListener('click', async function() {
       const awb = orderInput.value.trim();
       if (!awb) return;
-  
+
       statusMsg.textContent = "🔍 Fetching tracking info...";
       trackButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Tracking...';
       trackButton.disabled = true;
-  
+
       try {
         const res = await axios.get(`${API_BASE}/track?awb=${awb}`);
         const td = res.data.tracking_data;
         const track = td.shipment_track?.[0] || {};
         const activities = td.shipment_track_activities || [];
-  
+
         if (!track.current_status) {
           trackingContainer.classList.add("hidden");
-          statusMsg.innerHTML = `<p class='text-red-600'>⚠️ No tracking info found for <b>${awb}</b>.</p>`;
+          statusMsg.innerHTML = `<p class='text-red-600'>No tracking info found for <b>${awb}</b>.</p>`;
           return;
         }
-  
+
         trackingContainer.classList.remove("hidden");
-        statusMsg.innerHTML = `<p class='text-green-600 font-medium'>
-          ✅ Tracking info for <b>${awb}</b>
-          ${awb === "1234" ? "<br/><span class='text-gray-500 text-sm'>(Demo data loaded)</span>" : ""}
-        </p>`;
-  
+        statusMsg.innerHTML = `<p class='text-green-600 font-medium'>✅ Tracking info for <b>${awb}</b></p>`;
+
         trackingContainer.innerHTML = `
           <div class="bg-gradient-to-br from-[#fffaf7] to-[#f5f0ec] shadow-xl rounded-2xl p-6 mb-10">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-gray-200 pb-4">
@@ -191,7 +136,7 @@
                 ${track.current_status || "In Transit"}
               </div>
             </div>
-  
+
             <div class="grid md:grid-cols-2 gap-3 text-gray-700 text-sm mb-6">
               <p><b>Origin:</b> ${track.origin || "—"}</p>
               <p><b>Destination:</b> ${track.destination || "—"}</p>
@@ -200,9 +145,9 @@
               <p><b>Weight:</b> ${track.weight || "—"}</p>
               <p><b>Delivered To:</b> ${track.delivered_to || "—"}</p>
             </div>
-  
+
             <h3 class="text-lg font-semibold text-[#2A0001] mb-4">Tracking Timeline</h3>
-            <div class="relative border-l-2 border-gray-300 ml-3 pl-6 mt-4">
+           
               ${activities.map((step, i) => `
                 <div class="relative pb-10 flex items-start group">
                   ${i !== activities.length - 1 ? `<span class="absolute left-[7px] top-5 w-[2px] h-full bg-gray-300"></span>` : ""}
@@ -217,18 +162,17 @@
                   </div>
                 </div>
               `).join("")}
-            </div>
+           
           </div>
         `;
       } catch (err) {
         console.error(err);
-        statusMsg.innerHTML = "<p class='text-red-600'>⚠️ No tracking info found. Please check and try again.</p>";
+        statusMsg.innerHTML = "<p class='text-red-600'>❌ No tracking Number info found.</p>";
       } finally {
         trackButton.disabled = false;
         trackButton.innerHTML = '<i class="fas fa-search mr-2"></i> Track Your Order';
       }
     });
   </script>
-  
 </body>
 </html>
