@@ -14,22 +14,20 @@
   <style>
     :root {
       --primary: #2A0001;
-      --secondary: #DAA864;
+      --secondary: #B2A8A0;
     }
 
     body {
       font-family: 'Lexend', sans-serif;
-      background-color: #f9fafb;
       color: var(--primary);
+      background: linear-gradient(180deg, var(--primary) 0%, #4B1A18 35%, #bda9a4 75%, #ffffff 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
     }
 
     h1, h2, h3, h4, h5, h6, .font-primary {
       font-family: 'Philosopher', sans-serif;
       color: var(--primary);
-    }
-
-    .gradient-bg {
-      background: linear-gradient(to bottom, var(--primary) 30%, #ffffff);
     }
 
     .fade-in {
@@ -41,16 +39,8 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .timeline-dot {
-      transition: all 0.3s ease;
-    }
-
-    .timeline-dot:hover {
-      transform: scale(1.1);
-    }
-
     #trackButton {
-      transition: background-color 0.3s ease-in-out, cursor 0.2s, box-shadow 0.3s;
+      transition: background-color 0.3s ease-in-out, box-shadow 0.3s;
     }
 
     #trackButton:disabled {
@@ -59,20 +49,34 @@
     }
 
     #trackButton:not(:disabled):hover {
-      box-shadow: 0 0 12px rgba(218, 168, 100, 0.6);
+      background-color: #3b0c0c;
+      box-shadow: 0 0 10px rgba(42, 0, 1, 0.4);
+    }
+
+    .timeline-dot {
+      transition: all 0.3s ease;
+    }
+
+    .timeline-dot:hover {
+      transform: scale(1.1);
+    }
+
+    /* White container shadow refinement */
+    .card-shadow {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     }
   </style>
 </head>
 
-<body class="min-h-screen flex flex-col">
+<body class="flex flex-col">
   <main class="flex-grow">
-    <section class="gradient-bg rounded-b-3xl px-4 py-12 md:py-16">
+    <section class="px-4 py-16 md:py-20">
       <div class="max-w-6xl mx-auto">
         <div class="flex flex-col md:flex-row items-center gap-10">
           
           <!-- Left Content -->
           <div class="md:w-1/2 text-center md:text-left fade-in">
-            <h1 class="text-4xl md:text-5xl font-bold text-[var(--secondary)] mb-4 font-primary">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#B2A8A0] mb-4 font-primary leading-snug">
               Track your <span class="text-white">orders easily</span>
             </h1>
             <p class="text-lg text-gray-200 mb-8 font-[Lexend]">
@@ -81,7 +85,7 @@
           </div>
 
           <!-- Right Form -->
-          <div class="md:w-1/2 w-full bg-white rounded-xl shadow-xl p-6 md:p-8 fade-in" style="animation-delay: 0.2s;">
+          <div class="md:w-1/2 w-full bg-white rounded-2xl card-shadow p-6 md:p-8 fade-in" style="animation-delay: 0.2s;">
             <h2 class="text-2xl font-semibold mb-6 text-center md:text-left font-primary text-[var(--primary)]">
               Track Your Order
             </h2>
@@ -92,7 +96,7 @@
 
             <div class="mb-6">
               <input id="orderInput" type="text" placeholder="Enter Your Tracking ID (AWB)"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-[var(--secondary)] focus:border-[var(--secondary)] outline-none">
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-[var(--primary)] focus:border-[var(--primary)] outline-none text-[var(--primary)]">
             </div>
 
             <button id="trackButton" disabled
@@ -100,15 +104,15 @@
               <i class="fas fa-search mr-2"></i> Track Your Order
             </button>
 
-            <p id="statusMsg" class="text-gray-600 text-sm mt-4 text-center">
+            <p id="statusMsg" class="text-gray-600 text-sm mt-4 text-center font-[Lexend]">
               Check current status of your order
             </p>
           </div>
         </div>
       </div>
 
-      <!-- Tracking Result Container -->
-      <div id="trackingContainer" class="max-w-4xl mx-auto mt-12 hidden fade-in"></div>
+      <!-- Tracking Result -->
+      <div id="trackingContainer" class="max-w-4xl mx-auto mt-14 hidden fade-in"></div>
     </section>
   </main>
 
@@ -119,13 +123,13 @@
     const statusMsg = document.getElementById('statusMsg');
     const trackingContainer = document.getElementById('trackingContainer');
 
-    // 🔹 Enable/disable button dynamically
+    // Enable/disable button dynamically
     orderInput.addEventListener('input', function() {
       const value = orderInput.value.trim();
       if (value !== "") {
         trackButton.disabled = false;
         trackButton.classList.remove("bg-gray-300", "cursor-not-allowed");
-        trackButton.classList.add("bg-[var(--primary)]", "cursor-pointer", "hover:bg-[var(--secondary)]");
+        trackButton.classList.add("bg-[var(--primary)]", "cursor-pointer");
       } else {
         trackButton.disabled = true;
         trackButton.classList.remove("bg-[var(--primary)]", "cursor-pointer");
@@ -133,7 +137,7 @@
       }
     });
 
-    // 🔹 Handle API tracking request
+    // Handle tracking API call
     trackButton.addEventListener('click', async function() {
       const awb = orderInput.value.trim();
       if (!awb) return;
@@ -155,12 +159,12 @@
         }
 
         trackingContainer.classList.remove("hidden");
-        statusMsg.innerHTML = `<p class='text-[var(--secondary)] font-medium font-[Lexend]'>
+        statusMsg.innerHTML = `<p class='text-[#B2A8A0] font-medium font-[Lexend]'>
           ✅ Tracking info for <b>${awb}</b>
         </p>`;
 
         trackingContainer.innerHTML = `
-          <div class="bg-gradient-to-br from-[#fffaf7] to-[#f5f0ec] shadow-xl rounded-2xl p-6 mb-10">
+          <div class="bg-gradient-to-br from-[#fffaf7] to-[#f5f0ec] shadow-2xl rounded-2xl p-8 mb-12 border border-[#e4e0da]">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-gray-200 pb-4">
               <div class="flex items-center space-x-3">
                 <i class="fas fa-truck text-[var(--primary)] text-2xl"></i>
@@ -186,9 +190,9 @@
             <h3 class="text-lg font-semibold text-[var(--primary)] mb-4 font-primary">Tracking Timeline</h3>
             ${activities.map((step, i) => `
               <div class="relative pb-10 flex items-start group">
-                ${i !== activities.length - 1 ? `<span class="absolute left-[7px] top-5 w-[2px] h-full bg-gray-300"></span>` : ""}
+                ${i !== activities.length - 1 ? `<span class="absolute left-[7px] top-5 w-[2px] h-full bg-[#B2A8A0] opacity-60"></span>` : ""}
                 <div class="timeline-dot relative z-10 flex items-center justify-center w-4 h-4 mt-1.5 rounded-full
-                  ${i === activities.length - 1 ? 'bg-[var(--primary)] shadow-[0_0_10px_rgba(42,0,1,0.6)]' : 'bg-[var(--secondary)]'}">
+                  ${i === activities.length - 1 ? 'bg-[var(--primary)] shadow-[0_0_10px_rgba(42,0,1,0.6)]' : 'bg-[#B2A8A0]'}">
                   ${i === activities.length - 1 ? '<span class="absolute w-2 h-2 bg-white rounded-full animate-ping"></span>' : ''}
                 </div>
                 <div class="ml-5">
