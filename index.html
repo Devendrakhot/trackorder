@@ -8,227 +8,457 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
-    .gradient-bg { background: linear-gradient(to bottom, #2A0001 30%, #ffffff); }
-    .ping { position: relative; }
-    .ping::before {
-      content: ''; position: absolute; top: 50%; left: 50%; width: 100%; height: 100%;
-      border-radius: 9999px; background: rgba(251,146,60,0.4);
-      transform: translate(-50%, -50%); animation: ping 2s infinite;
+    :root {
+      --primary: #2A0001;
+      --secondary: #B2A8A0;
     }
-    @keyframes ping {
-      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+
+    body {
+      font-family: 'Lexend', sans-serif;
+      color: var(--primary);
+      background: #ffffff;
+      min-height: 100vh;
     }
-    .fade-in { animation: fadeIn 0.8s ease-in; }
+
+    h1, h2, h3, h4, h5, h6, .font-primary {
+      font-family: 'Philosopher', sans-serif;
+      color: var(--primary);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .timeline-dot { transition: all 0.3s ease; }
-    .timeline-dot:hover { transform: scale(1.1); }
-    #trackButton {
-      transition: background-color 0.3s ease-in-out, cursor 0.2s;
+
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* Enhanced input styling */
+    #orderInput {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(to right, #ffffff, #fafafa);
+    }
+
+    #orderInput:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(42, 0, 1, 0.15);
+      border-color: var(--primary);
+    }
+
+    #orderInput::placeholder {
+      transition: opacity 0.3s;
+    }
+
+    #orderInput:focus::placeholder {
+      opacity: 0.5;
+    }
+
+    #trackButton {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--primary) 0%, #3b0c0c 100%);
+    }
+
+    #trackButton::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transition: left 0.6s;
+    }
+
+    #trackButton:hover::before {
+      left: 100%;
+    }
+
     #trackButton:disabled {
       cursor: not-allowed;
-      background-color: #d1d5db; /* Tailwind gray-300 */
+      background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%);
     }
+
+    #trackButton:not(:disabled):hover {
+      background: linear-gradient(135deg, #3b0c0c 0%, var(--primary) 100%);
+      box-shadow: 0 10px 30px rgba(42, 0, 1, 0.5);
+      transform: translateY(-2px);
+    }
+
+    #trackButton:not(:disabled):active {
+      transform: translateY(0);
+      box-shadow: 0 5px 15px rgba(42, 0, 1, 0.3);
+    }
+
+    .timeline-dot {
+      transition: all 0.3s ease;
+    }
+
+    .timeline-dot:hover {
+      transform: scale(1.1);
+    }
+
+    /* Enhanced card with glassmorphism effect */
+    .card-shadow {
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .card-shadow:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+      transform: translateY(-4px);
+    }
+
+    /* Icon animations */
+    .icon-bounce {
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    /* Gradient text effect */
+    .gradient-text {
+      background: linear-gradient(135deg, #DAA864 0%, #ffffff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Tracking layout */
+    .tracking-card {
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid #ece6df;
+      overflow: hidden;
+    }
+
+    .tracking-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    @media (min-width: 1024px) {
+      .tracking-layout {
+        flex-direction: row;
+      }
+    }
+
+    .summary-panel {
+      flex: 0 0 260px;
+      background: linear-gradient(135deg, rgba(218, 168, 100, 0.16) 0%, rgba(218, 168, 100, 0.05) 80%);
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      border-right: 1px solid rgba(218, 168, 100, 0.25);
+    }
+
+    .summary-label {
+      font-size: 0.9rem;
+      letter-spacing: 0.35rem;
+      text-transform: uppercase;
+      color: rgba(30, 30, 30, 0.55);
+    }
+
+    .summary-day {
+      font-size: 4.5rem;
+      line-height: 1;
+      font-weight: 600;
+      color: #2a0001
+      ;
+    }
+
+    .summary-month {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.28rem;
+      color: rgba(30, 30, 30, 0.65);
+    }
+
+    .summary-status {
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--primary);
+      line-height: 1.4;
+    }
+
+    .summary-location {
+      font-size: 0.95rem;
+      color: rgba(30, 30, 30, 0.65);
+    }
+
+    .summary-time {
+      font-size: 0.85rem;
+      color: rgba(30, 30, 30, 0.5);
+    }
+
+    .summary-meta {
+      font-size: 0.9rem;
+      color: rgba(30, 30, 30, 0.65);
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .timeline-panel {
+      flex: 1;
+      padding: 2.5rem 2.5rem 2.5rem 1rem;
+    }
+
+    .timeline-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .timeline-header h3 {
+      font-family: 'Philosopher', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .order-grid {
+      display: grid;
+      gap: 0.75rem 1.5rem;
+      font-size: 0.95rem;
+      color: #494141;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .order-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .timeline-list {
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 1rem;
+      position: relative;
+    }
+
+    .timeline-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .timeline-list::-webkit-scrollbar-thumb {
+      background: rgba(107, 74, 70, 0.35);
+      border-radius: 999px;
+    }
+
   </style>
 </head>
 
-<body class="min-h-screen flex flex-col">
-  <main class="flex-grow">
-    <section class="gradient-bg rounded-b-3xl px-4 py-10 md:py-10">
+  <body class="flex flex-col">
+  <main class="flex-grow relative z-10">
+    <section class="px-4 py-16 md:py-20">
       <div class="max-w-6xl mx-auto">
-        <div class="flex flex-col md:flex-row items-center gap-10">
-          
-          <!-- Left Content -->
-          <div class="md:w-1/2 text-center md:text-left fade-in">
-            <h1 class="text-4xl md:text-5xl font-bold text-[#B2A8A0] mb-4">
-              Track your <span class="text-[#890B0f]">orders easily</span>
-            </h1>
-            <p class="text-lg text-white mb-8">
-              Stay updated with your order’s journey and delivery status.
+        <div class="flex justify-center">
+          <div class="w-full md:w-3/4 lg:w-1/2 rounded-2xl card-shadow p-6 md:p-8 fade-in" style="animation-delay: 0.2s;">
+            <h2 class="text-2xl font-semibold mb-6 text-center md:text-left font-primary text-[var(--primary)] flex items-center gap-2 justify-center md:justify-start">
+              <i class="fas fa-map-marked-alt text-[var(--primary)]"></i>
+              Track Your Order
+            </h2>
+
+            <p class="text-gray-700 mb-3 text-center md:text-left font-[Lexend]">
+              Enter your <span class="font-semibold text-[var(--primary)]">Tracking Number (AWB)</span> below to check your order status.
             </p>
 
-            <!-- Animated Location Pin -->
-            <div class="flex justify-center md:justify-start">
-              <div class="bg-white rounded-full p-4 shadow-lg relative">
-                <div class="ping w-14 h-14 flex items-center justify-center">
-                  <i class="fas fa-location-dot text-[#2A0001] text-2xl md:text-3xl"></i>
-                </div>
+            <div class="mb-6 relative">
+              <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 z-10">
+                <i class="fas fa-barcode"></i>
               </div>
-            </div>
-          </div>
-
-          <!-- Right Form -->
-          <div class="md:w-1/2 w-full bg-white rounded-xl shadow-lg p-6 md:p-8 fade-in" style="animation-delay: 0.2s;">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center md:text-left">Track Your Order</h2>
-
-            <!-- Instruction Line -->
-            <p class="text-gray-700 mb-3 text-center md:text-left">
-              Enter your <span class="font-semibold text-[#2A0001]">Tracking Number (AWB)</span> below to check your order status.
-            </p>
-
-            <div class="mb-6">
               <input id="orderInput" type="text" placeholder="Enter Your Tracking ID (AWB)"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-[#2A0001] focus:border-[#2A0001] outline-none">
+                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-[var(--primary)] focus:border-[var(--primary)] outline-none text-[var(--primary)]">
             </div>
 
             <button id="trackButton" disabled
-              class="w-full bg-gray-300 text-white font-semibold py-3 rounded-lg cursor-not-allowed">
+              class="w-full bg-gray-300 text-white font-semibold py-3 rounded-lg cursor-not-allowed font-[Lexend]">
               <i class="fas fa-search mr-2"></i> Track Your Order
             </button>
 
-            <p id="statusMsg" class="text-gray-600 text-sm mt-4 text-center">
+            <p id="statusMsg" class="text-gray-600 text-sm mt-4 text-center font-[Lexend] transition-all duration-300">
+              <i class="fas fa-info-circle mr-2 text-[var(--primary)]"></i>
               Check current status of your order
             </p>
           </div>
         </div>
       </div>
 
-      <!-- Tracking Result Container -->
-      <div id="trackingContainer" class="max-w-4xl mx-auto mt-12 hidden fade-in"></div>
-
-      <!-- Info Section -->
-      <div class="max-w-6xl mx-auto mt-16 bg-white rounded-3xl overflow-hidden shadow-lg flex flex-col md:flex-row">
-        <div class="md:w-1/2">
-          <img 
-            src="https://www.chinmayamission.com/_next/image?url=https%3A%2F%2Fimages.chinmayamission.com%2Fuploads%2F2_1_955095570d.jpg&w=640&q=75" 
-            alt="Community Well-being" 
-            class="w-[600px] h-[300px] object-cover mix-blend-multiply opacity-90 rounded-xl shadow-lg"
-          >
-        </div>
-        <div class="md:w-1/2 p-8 flex flex-col justify-center text-center md:text-left">
-          <h2 class="text-2xl font-bold text-[#2A0001] mb-4">
-            Supporting Well-being Through Every Purchase
-          </h2>
-          <p class="text-gray-800 text-lg italic mb-3">
-            “Proceeds from Chinmaya Mission are used to bring well-being to people and communities.”
-          </p>
-          <p class="text-gray-600">
-            Each product you buy contributes to initiatives in health, education, and inner transformation.
-          </p>
-        </div>
-      </div>
-
-      <div class="max-w-6xl mx-auto mt-6 text-center md:text-left px-4">
-        <p class="text-gray-700 text-center">
-          For questions or concerns, contact us 
-          <a href="#" class="text-[#2A0001] hover:underline font-medium">here</a>.
-        </p>
-      </div>
+      <!-- Tracking Result -->
+      <div id="trackingContainer" class="max-w-4xl mx-auto mt-14 hidden fade-in"></div>
     </section>
   </main>
 
   <script>
-    // ✅ Smart API base for local + production
-    const API_BASE = window.location.hostname.includes("localhost")
-      ? "http://localhost:3000/api"
-      : "/api";
-    console.log("🚀 Using API Base:", API_BASE);
-  
+    const API_BASE = "http://localhost:3000/api";
     const trackButton = document.getElementById('trackButton');
     const orderInput = document.getElementById('orderInput');
     const statusMsg = document.getElementById('statusMsg');
     const trackingContainer = document.getElementById('trackingContainer');
-  
+
     // Enable/disable button dynamically
     orderInput.addEventListener('input', function() {
       const value = orderInput.value.trim();
       if (value !== "") {
         trackButton.disabled = false;
         trackButton.classList.remove("bg-gray-300", "cursor-not-allowed");
-        trackButton.classList.add("bg-[#2A0001]", "cursor-pointer");
+        trackButton.classList.add("bg-[var(--primary)]", "cursor-pointer");
       } else {
         trackButton.disabled = true;
-        trackButton.classList.remove("bg-[#2A0001]", "cursor-pointer");
+        trackButton.classList.remove("bg-[var(--primary)]", "cursor-pointer");
         trackButton.classList.add("bg-gray-300", "cursor-not-allowed");
       }
     });
-  
+
     // Handle tracking API call
     trackButton.addEventListener('click', async function() {
       const awb = orderInput.value.trim();
       if (!awb) return;
-  
+
       statusMsg.textContent = "🔍 Fetching tracking info...";
       trackButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Tracking...';
       trackButton.disabled = true;
-  
+
       try {
         const res = await axios.get(`${API_BASE}/track?awb=${awb}`);
         const td = res.data.tracking_data;
         const track = td.shipment_track?.[0] || {};
         const activities = td.shipment_track_activities || [];
-  
+
         if (!track.current_status) {
           trackingContainer.classList.add("hidden");
-          statusMsg.innerHTML = `<p class='text-red-600'>⚠️ No tracking info found for <b>${awb}</b>.</p>`;
+          statusMsg.innerHTML = `<p class='text-red-600 font-[Lexend]'>⚠️ No tracking info found for <b>${awb}</b>.</p>`;
           return;
         }
-  
+
         trackingContainer.classList.remove("hidden");
-        statusMsg.innerHTML = `<p class='text-green-600 font-medium'>
+        statusMsg.innerHTML = `<p class='text-[#B2A8A0] font-medium font-[Lexend]'>
           ✅ Tracking info for <b>${awb}</b>
-          ${awb === "1234" ? "<br/><span class='text-gray-500 text-sm'>(Demo data loaded)</span>" : ""}
         </p>`;
-  
+
+        const currentStatusText = (track.current_status || "").toLowerCase();
+        const estimatedRaw = track.edd || track.expected_delivery_date || track.etd || track.predicted_delivery_date;
+        const estimatedDate = estimatedRaw ? new Date(estimatedRaw) : null;
+        const estimatedDateDisplay = estimatedDate && !isNaN(estimatedDate)
+          ? estimatedDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+          : "";
+
+        const outForDeliveryActivity = activities.find(act =>
+          (act.status || "").toLowerCase().includes("out for delivery")
+        );
+
+        let summaryLabel = "ESTIMATED";
+        let timeDescriptor = "Expected by";
+        let displayDateRaw = estimatedRaw;
+
+        if (currentStatusText.includes("out for delivery")) {
+          displayDateRaw = outForDeliveryActivity?.date
+            || track.current_status_time
+            || track.current_status_date
+            || new Date().toISOString();
+          summaryLabel = "OUT FOR DELIVERY";
+          timeDescriptor = "Out for delivery at";
+        } else if (!displayDateRaw && track.delivered_date) {
+          displayDateRaw = track.delivered_date;
+          summaryLabel = "DELIVERED";
+          timeDescriptor = "Delivered at";
+        }
+
+        const displayDate = displayDateRaw ? new Date(displayDateRaw) : null;
+        const isValidDisplayDate = displayDate && !isNaN(displayDate);
+        const dayNumber = isValidDisplayDate ? displayDate.getDate() : "—";
+        const monthName = isValidDisplayDate ? displayDate.toLocaleString('en-US', { month: 'long' }).toUpperCase() : "";
+        const weekdayName = isValidDisplayDate ? displayDate.toLocaleString('en-US', { weekday: 'long' }).toUpperCase() : summaryLabel;
+        const formattedTime = isValidDisplayDate ? displayDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : "";
+
         trackingContainer.innerHTML = `
-          <div class="bg-gradient-to-br from-[#fffaf7] to-[#f5f0ec] shadow-xl rounded-2xl p-6 mb-10">
-            <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-gray-200 pb-4">
-              <div class="flex items-center space-x-3">
-                <i class="fas fa-truck text-[#2A0001] text-2xl"></i>
-                <div>
-                  <p class="text-lg font-semibold text-[#2A0001]">${track.courier_name || "Courier"}</p>
-                  <p class="text-sm text-gray-600">AWB: ${track.awb_code || awb}</p>
+          <div class="tracking-card mb-12">
+            <div class="tracking-layout">
+              <aside class="summary-panel font-[Lexend]">
+                ${estimatedDateDisplay ? `<p class="text-xs tracking-wide text-gray-600 uppercase font-semibold">Estimated Delivery Date</p>` : ""}
+                <span class="summary-label">${weekdayName}</span>
+                <span class="summary-day">${dayNumber}</span>
+                <span class="summary-month">${monthName}</span>
+                <p class="summary-status">${(track.current_status || "In Transit").toUpperCase()}</p>
+                <p class="summary-location">${track.current_status_location || "—"}</p>
+                <p class="summary-time">${formattedTime ? `${timeDescriptor} ${formattedTime}` : ""}</p>
+                <div class="summary-meta">
+                  <p><strong>Courier:</strong> ${track.courier_name || "Courier"}</p>
+                  <p><strong>ID:</strong> ${track.awb_code || awb}</p>
+                  ${estimatedDateDisplay ? `<p><strong>EDD:</strong> ${estimatedDateDisplay}</p>` : ""}
                 </div>
-              </div>
-              <div class="bg-[#2A0001] text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md">
-                ${track.current_status || "In Transit"}
-              </div>
-            </div>
-  
-            <div class="grid md:grid-cols-2 gap-3 text-gray-700 text-sm mb-6">
-              <p><b>Origin:</b> ${track.origin || "—"}</p>
-              <p><b>Destination:</b> ${track.destination || "—"}</p>
-              <p><b>Pickup Date:</b> ${track.pickup_date || "—"}</p>
-              <p><b>Delivered Date:</b> ${track.delivered_date || "—"}</p>
-              <p><b>Weight:</b> ${track.weight || "—"}</p>
-              <p><b>Delivered To:</b> ${track.delivered_to || "—"}</p>
-            </div>
-  
-            <h3 class="text-lg font-semibold text-[#2A0001] mb-4">Tracking Timeline</h3>
-            <div class="relative border-l-2 border-gray-300 ml-3 pl-6 mt-4">
-              ${activities.map((step, i) => `
-                <div class="relative pb-10 flex items-start group">
-                  ${i !== activities.length - 1 ? `<span class="absolute left-[7px] top-5 w-[2px] h-full bg-gray-300"></span>` : ""}
-                  <div class="timeline-dot relative z-10 flex items-center justify-center w-4 h-4 mt-1.5 rounded-full
-                    ${i === activities.length - 1 ? 'bg-[#2A0001] shadow-[0_0_10px_rgba(42,0,1,0.5)]' : 'bg-gray-400'}">
-                    ${i === activities.length - 1 ? '<span class="absolute w-2 h-2 bg-white rounded-full"></span>' : ''}
-                  </div>
-                  <div class="ml-5">
-                    <p class="font-semibold text-gray-800 leading-tight">${step.status}</p>
-                    <p class="text-sm text-gray-600">${step.location || "—"}</p>
-                    <p class="text-xs text-gray-400">${step.date || ""}</p>
+              </aside>
+
+              <section class="timeline-panel font-[Lexend]">
+                <div class="timeline-header">
+                  <h3>Tracking Activity</h3>
+                  <div class="order-grid">
+                    <p><strong>Origin:</strong> ${track.origin || "—"}</p>
+                    <p><strong>Destination:</strong> ${track.destination || "—"}</p>
+                    <p><strong>Pickup Date:</strong> ${track.pickup_date || "—"}</p>
+                    <p><strong>Delivered Date:</strong> ${track.delivered_date || "—"}</p>
+                    <p><strong>Weight:</strong> ${track.weight || "—"}</p>
+                    <p><strong>Delivered To:</strong> ${track.delivered_to || "—"}</p>
                   </div>
                 </div>
-              `).join("")}
+
+                <div class="timeline-list">
+                  ${activities.map((step, i) => `
+                    <div class="relative pb-10 flex items-start group">
+                      ${i !== activities.length - 1 ? `<span class="absolute left-[7px] top-5 w-[2px] h-full bg-[#B2A8A0] opacity-60"></span>` : ""}
+                      <div class="timeline-dot relative z-10 flex items-center justify-center w-4 h-4 mt-1.5 rounded-full
+                        ${i === 0 ? 'bg-[var(--primary)] shadow-[0_0_10px_rgba(42,0,1,0.6)]' : 'bg-[#B2A8A0]'}">
+                        ${i === 0 ? '<span class="absolute w-2 h-2 bg-white rounded-full animate-ping"></span>' : ''}
+                      </div>
+                      <div class="ml-5 space-y-1">
+                        <p class="font-semibold text-[var(--primary)] leading-tight">
+                          ${i === 0 ? (track.current_status || step.status || "Current status") : (step.status || "Activity update")}
+                        </p>
+                        <p class="text-sm text-gray-600">${step.location || "—"}</p>
+                      </div>
+                    </div>
+                  `).join("")}
+                </div>
+              </section>
             </div>
           </div>
         `;
       } catch (err) {
         console.error(err);
-        statusMsg.innerHTML = "<p class='text-red-600'>⚠️ No tracking info found. Please check and try again.</p>";
+        statusMsg.innerHTML = "<p class='text-red-600 font-[Lexend]'>❌ No tracking number found. Please check and try again.</p>";
       } finally {
         trackButton.disabled = false;
         trackButton.innerHTML = '<i class="fas fa-search mr-2"></i> Track Your Order';
       }
     });
   </script>
-  
 </body>
 </html>
