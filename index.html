@@ -17,6 +17,10 @@
       --secondary: #B2A8A0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: 'Anek Latin', sans-serif;
       color: var(--primary);
@@ -324,6 +328,33 @@
     const statusMsg = document.getElementById('statusMsg');
     const trackingContainer = document.getElementById('trackingContainer');
 
+    // Custom smooth scroll function with easing
+    function smoothScrollTo(element, offset = 50, duration = 800) {
+      const targetPosition = element.getBoundingClientRect().top + window.pageYOffset - offset;
+      const startPosition = window.pageYOffset;
+      const distance = targetPosition - startPosition;
+      let startTime = null;
+
+      function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      }
+
+      function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        const ease = easeInOutCubic(progress);
+        
+        window.scrollTo(0, startPosition + distance * ease);
+        
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
+        }
+      }
+
+      requestAnimationFrame(animation);
+    }
+
     // Enable/disable button dynamically
     orderInput.addEventListener('input', function() {
       const value = orderInput.value.trim();
@@ -451,6 +482,13 @@
             </div>
           </div>
         `;
+        
+        // Smooth scroll to tracking container after content is rendered
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            smoothScrollTo(trackingContainer, 50, 1000);
+          }, 400);
+        });
       } catch (err) {
         console.error(err);
         statusMsg.innerHTML = "<p class='text-red-600 font-[Lexend]'>❌ No tracking number found. Please check and try again.</p>";
